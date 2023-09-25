@@ -28,7 +28,7 @@ class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/slugify/{phrase}', name: 'slugify_phrase')]
+    #[Route('/product/slug/{phrase}', name: 'slugify_phrase')]
     public function slugifyPhrase(SlugifyService $slugifyService, string $phrase): Response
     {
         $slug = $slugifyService->slugify($phrase);
