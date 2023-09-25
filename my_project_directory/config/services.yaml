@@ -7,6 +7,10 @@ parameters:
 
 services:
     # default configuration for services in *this* file
+    arguments:
+        $eventDispatcher: '@event_dispatcher'
+    tags:
+        - { name: doctrine.event_listener, event: postPersist }
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
