@@ -2,13 +2,16 @@
 
 namespace App\Entity;
 
-use App\Repository\MovieRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiFilter;
+use App\Repository\MovieRepository;
 use ApiPlatform\Metadata\ApiResource;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 #[ApiResource(
@@ -27,21 +30,30 @@ class Movie
     private ?Category $category = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 2, max: 50, maxMessage: 'Le titre doit faire entre 2 et 50 caractères')]
     #[Groups(['movie:read', 'actor:read', 'category:read'])]
+    #[ApiFilter(SearchFilter::class, strategy: 'partial')]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     #[Groups(['movie:read'])]
+    #[ApiFilter(SearchFilter::class, strategy: 'partial')]
     private ?string $description = null;
+
+    #[ORM\Column]
+    #[Assert\Length(min: 1, max: 1000, maxMessage: 'La durée doit faire entre 1 et 1000 minutes')]
+    #[Groups(['movie:read'])]
+    private ?int $duration = null;
 
     #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
     #[Groups(['movie:read'])]
     private Collection $actors;
 
-    #[ORM\Column]
-    private ?int $duration = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['movie:read'])]
     private ?\DateTimeInterface $releaseDate = null;
 
     /**

@@ -18,15 +18,15 @@ class Actor
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['actor:read', 'movie:read'])]
+    #[Groups(['actor:read', 'movie:read', 'nationality:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['actor:read', 'movie:read'])]
+    #[Groups(['actor:read', 'movie:read', 'nationality:read'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['actor:read', 'movie:read'])]
+    #[Groups(['actor:read', 'movie:read', 'nationality:read'])]
     private ?string $lastName = null;
 
     #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actors')]
@@ -34,6 +34,7 @@ class Actor
     private Collection $movies;
 
     #[ORM\ManyToOne(inversedBy: 'Actor')]
+    #[Groups(['actor:read'])]
     private ?Nationality $nationality = null;
 
     /**
