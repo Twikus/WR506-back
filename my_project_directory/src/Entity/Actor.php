@@ -33,6 +33,9 @@ class Actor
     #[Groups(['actor:read'])]
     private Collection $movies;
 
+    #[ORM\ManyToOne(inversedBy: 'Actor')]
+    private ?Nationality $nationality = null;
+
     /**
      * @return Collection<int, Movie>
      */
@@ -90,6 +93,18 @@ class Actor
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getNationality(): ?Nationality
+    {
+        return $this->nationality;
+    }
+
+    public function setNationality(?Nationality $nationality): static
+    {
+        $this->nationality = $nationality;
 
         return $this;
     }
