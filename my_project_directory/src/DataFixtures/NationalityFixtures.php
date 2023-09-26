@@ -12,7 +12,6 @@ class NationalityFixtures extends Fixture
     {
 
         $title = ['Français', 'Anglais', 'Américain', 'Allemand', 'Italien', 'Espagnol', 'Portugais', 'Belge', 'Suisse', 'Canadien'];
-        // Génere les données pour 10 nationalités avec un title réaliste
 
         foreach (range(1, 10) as $i) {
             $nationality = new Nationality();
