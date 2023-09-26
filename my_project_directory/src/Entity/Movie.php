@@ -8,26 +8,34 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
-#[ApiResource()]
+#[ApiResource(
+    normalizationContext: ['groups' => ['movie:read']],
+)]
 class Movie
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['movie:read', 'actor:read', 'category:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'movies')]
+    #[Groups(['movie:read'])]
     private ?Category $category = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['movie:read', 'actor:read', 'category:read'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['movie:read'])]
     private ?string $description = null;
 
     #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
+    #[Groups(['movie:read'])]
     private Collection $actors;
 
     #[ORM\Column]
