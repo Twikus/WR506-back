@@ -10,14 +10,13 @@ class NationalityFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-
-        $title = ['Français', 'Anglais', 'Américain', 'Allemand', 'Italien', 'Espagnol', 'Portugais', 'Belge', 'Suisse', 'Canadien'];
-
-        foreach (range(1, 10) as $i) {
+        // Génère un tableau dans la variable pays qui contient dix origines
+        $pays = ['France', 'Allemagne', 'Italie', 'Espagne', 'Portugal', 'Belgique', 'Suisse', 'Angleterre', 'Pays-Bas', 'Autriche'];
+        foreach (range(0, 9) as $i) {
             $nationality = new Nationality();
-            $nationality->setTitle($title[rand(0, 9)]);
+            $nationality->setTitle($pays[$i]);
             $manager->persist($nationality);
-            $this->addReference('nationality_' . $i, $nationality); // "expose" l'objet à l'extérieur de la classe pour les liaisons avec Movie
+            $this->addReference('nationality_' . $i, $nationality);
         }
 
         $manager->flush();
