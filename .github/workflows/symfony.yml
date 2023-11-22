@@ -27,16 +27,13 @@ jobs:
       - uses: actions/checkout@v3
       - name: Copy .env.test.local
         run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v3
-        with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
+      - name: Update Composer
+        run: composer self-update
+      - name: Clear Composer cache
+        run: composer clear-cache
       - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        run: |
+          composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist || (echo "Composer install failed" && exit 1)
       - name: Create Database
         run: |
           mkdir -p data
@@ -45,15 +42,11 @@ jobs:
         env:
           DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
         run: vendor/bin/phpunit
-      
       - name: Run PHPUnit
         run: vendor/bin/phpunit tests/
-
       - name: Run PHP_CodeSniffer
         run: vendor/bin/phpcs --standard=PSR2 src/
-
       - name: Run PHPStan
         run: vendor/bin/phpstan analyze src/
-
       - name: Run PHPMD
         run: vendor/bin/phpmd src/ text cleancode,codesize,controversial,design,naming
