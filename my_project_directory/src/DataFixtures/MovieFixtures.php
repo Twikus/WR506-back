@@ -11,8 +11,6 @@ class MovieFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        // Génère 40 films avec un titre, une date de sortie, une durée, un synopsis, une catégorie (en lien avec les autres fixtures) et entre 2 et 4 acteurs, diffé (en lien avec les autres fixtures)
-
         foreach (range(1, 40) as $i) {
             $movie = new Movie();
             $movie->setTitle('Movie ' . $i);
