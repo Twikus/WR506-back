@@ -16,7 +16,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['movie:read']],
-)]
+    denormalizationContext: ['groups' => ['movie:write']],
+    paginationItemsPerPage: 6,
+),
+ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])]
 class Movie
 {
     #[ORM\Id]

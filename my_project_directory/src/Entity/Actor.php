@@ -12,6 +12,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ActorRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['actor:read']],
+    denormalizationContext: ['groups' => ['actor:write']],
+    paginationItemsPerPage: 6,
 )]
 class Actor
 {
