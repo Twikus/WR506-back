@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\Collection;
@@ -12,7 +15,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['category:read']],
-)]
+    denormalizationContext: ['groups' => ['category:write']],
+    paginationItemsPerPage: 6,
+),
+ApiFilter(SearchFilter::class, properties: ['name' => 'partial'])]
 class Category
 {
     #[ORM\Id]
@@ -23,6 +29,9 @@ class Category
 
     #[ORM\Column(length: 255)]
     #[Groups(['category:read', 'movie:read'])]
+    #[Assert\NotNull]
+    #[Assert\Length(min: 2, max: 255)]
+    #[Assert\Type('string')]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Movie::class)]
