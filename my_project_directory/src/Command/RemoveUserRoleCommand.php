@@ -1,6 +1,6 @@
 <?php
 
-// src/Command/AssignUserRoleCommand.php
+// src/Command/RemoveUserRoleCommand.php
 namespace App\Command;
 
 use Symfony\Component\Console\Command\Command;
@@ -12,7 +12,7 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
 
-class AssignUserRoleCommand extends Command
+class RemoveUserRoleCommand extends Command
 {
     private EntityManagerInterface $entityManager;
 
@@ -26,9 +26,9 @@ class AssignUserRoleCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('app:assign-user-role')
-            ->setDescription('Assign a role to a specific user.')
-            ->addArgument('user_id', InputArgument::REQUIRED, 'The user ID to assign a role.');
+            ->setName('app:remove-user-role')
+            ->setDescription('Remove a role from a specific user.')
+            ->addArgument('user_id', InputArgument::REQUIRED, 'The user ID to remove a role.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -44,32 +44,39 @@ class AssignUserRoleCommand extends Command
             return Command::FAILURE;
         }
 
-        // Define available roles
-        $availableRoles = ['ROLE_USER', 'ROLE_ADMIN']; // Add any additional roles as needed
+        // Get the roles assigned to the user
+        $userRoles = $user->getRoles();
 
-        // Ask the user to choose a role from the available options
-        $selectedRole = $this->askForRole($input, $output, $availableRoles);
+        // Check if the user has any roles to remove
+        if (empty($userRoles)) {
+            $output->writeln("User with ID $userId has no roles to remove.");
 
-        // Check if the user already has the selected role
-        if (!in_array($selectedRole, $user->getRoles(), true)) {
-            // Add the selected role
-            $user->addRole($selectedRole);
+            return Command::FAILURE;
+        }
+
+        // Ask the user to choose a role from the roles assigned to the user
+        $selectedRole = $this->askForRoleToRemove($input, $output, $userRoles);
+
+        // Check if the user has the selected role
+        if (in_array($selectedRole, $userRoles, true)) {
+            // Remove the selected role
+            $user->removeRole($selectedRole);
 
             // Save the changes
             $this->entityManager->flush();
 
-            $output->writeln("$selectedRole has been assigned to user with ID $userId.");
+            $output->writeln("$selectedRole has been removed from user with ID $userId.");
         } else {
-            $output->writeln("User with ID $userId already has $selectedRole.");
+            $output->writeln("User with ID $userId does not have the role $selectedRole.");
         }
 
         return Command::SUCCESS;
     }
 
-    private function askForRole(InputInterface $input, OutputInterface $output, array $availableRoles): string
+    private function askForRoleToRemove(InputInterface $input, OutputInterface $output, array $userRoles): string
     {
         $helper = new QuestionHelper();
-        $question = new ChoiceQuestion('Choose a role:', $availableRoles);
+        $question = new ChoiceQuestion('Choose a role to remove:', $userRoles);
 
         return $helper->ask($input, $output, $question);
     }
