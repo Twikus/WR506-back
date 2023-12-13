@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ActorRepository;
 use ApiPlatform\Metadata\ApiResource;
@@ -14,7 +16,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ['groups' => ['actor:read']],
     denormalizationContext: ['groups' => ['actor:write']],
     paginationItemsPerPage: 6,
-)]
+),
+ApiFilter(SearchFilter::class, properties: ['firstName' => 'partial', 'lastName' => 'partial'])]
 class Actor
 {
     #[ORM\Id]
@@ -30,6 +33,10 @@ class Actor
     #[ORM\Column(length: 255)]
     #[Groups(['actor:read', 'movie:read', 'nationality:read'])]
     private ?string $lastName = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['actor:read', 'movie:read', 'nationality:read'])]
+    private ?string $fullName = null;
 
     #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actors')]
     #[Groups(['actor:read'])]
@@ -96,6 +103,18 @@ class Actor
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getFullName(): ?string
+    {
+        return $this->firstName . ' ' . $this->lastName;
+    }
+
+    public function setFullName(string $fullName): static
+    {
+        $this->fullName = $fullName;
 
         return $this;
     }

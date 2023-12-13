@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\Collection;
@@ -14,7 +16,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ['groups' => ['category:read']],
     denormalizationContext: ['groups' => ['category:write']],
     paginationItemsPerPage: 6,
-)]
+),
+ApiFilter(SearchFilter::class, properties: ['name' => 'partial'])]
 class Category
 {
     #[ORM\Id]
