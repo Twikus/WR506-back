@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiFilter;
+use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ActorRepository;
@@ -27,10 +28,16 @@ class Actor
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Type('string')]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 2, max: 255)]
     #[Groups(['actor:read', 'movie:read', 'nationality:read'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Type('string')]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 2, max: 255)]
     #[Groups(['actor:read', 'movie:read', 'nationality:read'])]
     private ?string $lastName = null;
 

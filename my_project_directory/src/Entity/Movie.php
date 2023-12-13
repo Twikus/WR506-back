@@ -34,19 +34,38 @@ class Movie
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Assert\Length(min: 2, max: 50, maxMessage: 'Le titre doit faire entre 2 et 50 caractères')]
+    #[Assert\Length(
+        min: 2, 
+        max: 50,
+        minMessage: 'Le titre doit faire entre 2 et 50 caractères',
+        maxMessage: 'Le titre doit faire entre 2 et 50 caractères'
+    )]
+    #[Assert\Type('string')]
     #[Groups(['movie:read', 'actor:read', 'category:read'])]
     #[ApiFilter(SearchFilter::class, strategy: 'partial')]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 2, 
+        max: 1000,
+        minMessage: 'La description doit faire entre 2 et 1000 caractères',
+        maxMessage: 'La description doit faire entre 2 et 1000 caractères'
+    )]
+    #[Assert\Type('string')]
     #[Groups(['movie:read'])]
     #[ApiFilter(SearchFilter::class, strategy: 'partial')]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Assert\Length(min: 1, max: 1000, maxMessage: 'La durée doit faire entre 1 et 1000 minutes')]
+    #[Assert\Length(
+        min: 1,
+        max: 1000,
+        minMessage: 'La durée doit faire entre 1 et 1000 minutes',
+        maxMessage: 'La durée doit faire entre 1 et 1000 minutes'
+    )]
+    #[Assert\Type('integer')]
     #[Groups(['movie:read'])]
     private ?int $duration = null;
 
