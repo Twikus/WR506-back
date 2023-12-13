@@ -59,7 +59,7 @@ class Movie
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Assert\Length(
+    #[Assert\Range(
         min: 1,
         max: 1000,
         minMessage: 'La durée doit faire entre 1 et 1000 minutes',
