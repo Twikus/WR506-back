@@ -29,14 +29,14 @@ class Actor
 
     #[ORM\Column(length: 255)]
     #[Assert\Type('string')]
-    #[Assert\NotBlank]
+    #[Assert\NotNull]
     #[Assert\Length(min: 2, max: 255)]
     #[Groups(['actor:read', 'movie:read', 'nationality:read'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Type('string')]
-    #[Assert\NotBlank]
+    #[Assert\NotNull]
     #[Assert\Length(min: 2, max: 255)]
     #[Groups(['actor:read', 'movie:read', 'nationality:read'])]
     private ?string $lastName = null;
@@ -45,11 +45,18 @@ class Actor
     #[Groups(['actor:read', 'movie:read', 'nationality:read'])]
     private ?string $fullName = null;
 
+    #[ORM\Column(length: 255)]
+    #[Assert\Type('text')]
+    #[Groups(['actor:read', 'movie:read', 'nationality:read'])]
+    private ?string $reward = null;
+
     #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actors')]
     #[Groups(['actor:read'])]
     private Collection $movies;
 
     #[ORM\ManyToOne(inversedBy: 'Actor')]
+    #[Assert\NotNull]
+    #[Assert\Type('string')]
     #[Groups(['actor:read'])]
     private ?Nationality $nationality = null;
 
@@ -116,7 +123,7 @@ class Actor
 
     public function getFullName(): ?string
     {
-        return $this->firstName . ' ' . $this->lastName;
+        return $this->fullName;
     }
 
     public function setFullName(string $fullName): static
@@ -134,6 +141,18 @@ class Actor
     public function setNationality(?Nationality $nationality): static
     {
         $this->nationality = $nationality;
+
+        return $this;
+    }
+
+    public function getReward(): ?string
+    {
+        return $this->reward;
+    }
+
+    public function setReward(string $reward): static
+    {
+        $this->reward = $reward;
 
         return $this;
     }

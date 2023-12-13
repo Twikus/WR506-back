@@ -29,7 +29,7 @@ class Category
 
     #[ORM\Column(length: 255)]
     #[Groups(['category:read', 'movie:read'])]
-    #[Assert\NotBlank]
+    #[Assert\NotNull]
     #[Assert\Length(min: 2, max: 255)]
     #[Assert\Type('string')]
     private ?string $name = null;
