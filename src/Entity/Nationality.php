@@ -24,6 +24,7 @@ class Nationality
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Assert\Length(min: 2, max: 255)]
     #[Groups(['nationality:read', 'actor:read'])]
     private ?string $title = null;
 
