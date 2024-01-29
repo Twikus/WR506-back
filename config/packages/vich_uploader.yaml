@@ -6,7 +6,7 @@ vich_uploader:
 
     mappings:
         # Configuration spécifique à votre entité
-        media_object:
-            uri_prefix: /uploads/ # Préfixe pour les URLs générées
-            upload_destination: '%kernel.project_dir%/public/uploads' # Répertoire où seront stockés les fichiers
-            namer: Vich\UploaderBundle\Naming\ # Nommez les fichiers avec leur nom d'origine
+        your_entity_name:
+            uri_prefix: /uploads/
+            upload_destination: '%kernel.project_dir%/public/uploads'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
