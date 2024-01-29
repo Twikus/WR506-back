@@ -1,12 +1,7 @@
 vich_uploader:
-    db_driver: orm # Utilisez ORM si vous utilisez Doctrine ORM
-
-    metadata:
-        type: attribute
-
+    db_driver: orm
     mappings:
-        # Configuration spécifique à votre entité
-        your_entity_name:
-            uri_prefix: /uploads/
-            upload_destination: '%kernel.project_dir%/public/uploads'
+        media_object:
+            uri_prefix: /media
+            upload_destination: '%kernel.project_dir%/public/media'
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
