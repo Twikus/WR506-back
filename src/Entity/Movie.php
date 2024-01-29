@@ -2,11 +2,16 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Post;
 use Doctrine\DBAL\Types\Types;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiFilter;
 use App\Repository\MovieRepository;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
@@ -15,11 +20,22 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['movie:read']],
-    denormalizationContext: ['groups' => ['movie:write']],
-    paginationItemsPerPage: 6,
-),
-ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])]
+    description: 'Des films',
+    operations: [
+        new GetCollection(),
+        new Post(security: "is_granted('ROLE_ADMIN')"),
+        new Get(),
+        new Delete(security: "is_granted('ROLE_ADMIN')"),
+        new Put(security: "is_granted('ROLE_ADMIN')"),
+    ],
+    normalizationContext: [
+        'groups' => ['movie:read'],
+    ],
+    denormalizationContext: [
+        'groups' => ['movie:write'],
+    ],
+)]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])]
 class Movie
 {
     #[ORM\Id]
@@ -28,70 +44,55 @@ class Movie
     #[Groups(['movie:read', 'actor:read', 'category:read'])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'movies')]
-    #[Groups(['movie:read'])]
-    private ?Category $category = null;
-
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\Length(
-        min: 2, 
-        max: 50,
-        minMessage: 'Le titre doit faire entre 2 et 50 caractères',
-        maxMessage: 'Le titre doit faire entre 2 et 50 caractères'
-    )]
-    #[Assert\Type('string')]
-    #[Groups(['movie:read', 'actor:read', 'category:read'])]
-    #[ApiFilter(SearchFilter::class, strategy: 'partial')]
+    #[Groups(['movie:read', 'movie:write', 'actor:read'])]
+    #[Assert\NotBlank(message: 'Le titre du film est obligatoire')]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotNull]
-    #[Assert\Type('text')]
-    #[Groups(['movie:read'])]
-    #[ApiFilter(SearchFilter::class, strategy: 'partial')]
+    #[Groups(['movie:read', 'movie:write', 'actor:read'])]
+    #[Assert\NotBlank(message: 'La description du film est obligatoire')]
     private ?string $description = null;
 
-    #[ORM\Column]
-    #[Assert\Type('integer')]
-    #[Groups(['movie:read'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['movie:read', 'movie:write'])]
     private ?int $duration = null;
     
-    #[ORM\Column]
-    #[Assert\Type('integer')]
-    #[Groups(['movie:read'])]
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Groups(['movie:read', 'movie:write'])]
+    #[Assert\Positive(message: 'Le nombre d\'entrées doit être positif')]
     private ?int $entries = null;
     
-    #[ORM\Column]
-    #[Assert\Type('integer')]
-    #[Groups(['movie:read'])]
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Groups(['movie:read', 'movie:write'])]
+    #[Assert\Positive(message: 'Le budget doit être positif')]
     private ?int $budget = null;
     
-    #[ORM\Column]
-    #[Assert\Type('float')]
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Assert\Range(min: 0, max: 10)]
-    #[Groups(['movie:read'])]
+    #[Groups(['movie:read', 'movie:write'])]
     private ?int $note = null;
 
-    #[ORM\Column]
-    #[Assert\NotNull]
-    #[Assert\Type('string')]
-    #[Groups(['movie:read'])]
+    #[ORM\Column(length: 255)]
+    #[Groups(['movie:read', 'movie:write'])]
+    #[Assert\NotBlank(message: 'Le réalisateur est obligatoire')]
     private ?string $director = null;
 
-    #[ORM\Column]
-    #[Assert\Type('string')]
-    #[Groups(['movie:read'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['movie:read', 'movie:write'])]
+    #[Assert\Url(message: 'Le lien doit être valide')]
     private ?string $website = null;
+
+    #[ORM\ManyToOne(inversedBy: 'movies')]
+    #[Groups(['movie:read', 'movie:write'])]
+    private ?Category $category = null;
 
     #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
     #[Groups(['movie:read'])]
     private Collection $actors;
 
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Assert\Url(message: 'The url {{ value }} is not a valid url')]
-    #[Groups(['movie:read'])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['movie:read', 'movie:write'])]
     private ?\DateTimeInterface $releaseDate = null;
 
     /**
