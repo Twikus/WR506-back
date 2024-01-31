@@ -17,6 +17,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 #[ApiResource(
@@ -36,6 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
 )]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])]
+#[Vich\Uploadable()]
 class Movie
 {
     #[ORM\Id]
@@ -43,6 +46,11 @@ class Movie
     #[ORM\Column]
     #[Groups(['movie:read', 'actor:read', 'category:read'])]
     private ?int $id = null;
+
+    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: MediaObject::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['movie:read', 'movie:write'])]
+    private Collection|null $mediaObjects = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['movie:read', 'movie:write', 'actor:read'])]
@@ -94,6 +102,31 @@ class Movie
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['movie:read', 'movie:write'])]
     private ?\DateTimeInterface $releaseDate = null;
+
+    /**
+     * @return Collection<int, MediaObject>
+     */
+    public function getMediaObjects(): Collection
+    {
+        return $this->mediaObjects;
+    }
+
+    public function addMediaObject(MediaObject $mediaObject): static
+    {
+        if (!$this->mediaObjects->contains($mediaObject)) {
+            $this->mediaObjects->add($mediaObject);
+            $mediaObject->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMediaObject(MediaObject $mediaObject): static
+    {
+        $this->mediaObjects->removeElement($mediaObject);
+
+        return $this;
+    }
 
     /**
      * @return Collection<int, Actor>
