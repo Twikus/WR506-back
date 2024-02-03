@@ -33,13 +33,15 @@ class RegistrationController extends AbstractController
         // Créez un nouvel utilisateur
         $user = new User();
         $user->setEmail($data['email']);
+        $user->setFirstname($data['firstname']);
+        $user->setLastname($data['lastname']);
 
         // Encodez le mot de passe (vous pouvez également ajouter d'autres logiques ici)
         $hashedPassword = $this->passwordHasher->hashPassword($user, $data['password']);
         $user->setPassword($hashedPassword);
 
-        // Assignez le rôle ROLE_USER (vous pouvez également avoir ROLE_ADMIN si nécessaire)
-        $user->setRoles(['ROLE_USER']);
+        // Assignez le rôle (vous pouvez également avoir ROLE_ADMIN si nécessaire)
+        $user->setRoles([$data['role']]);
 
         // Persistez l'utilisateur en utilisant ManagerRegistry
         $entityManager = $this->doctrine->getManager();
