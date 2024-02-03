@@ -23,8 +23,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Unique(message: 'Cet email est déjà utilisé')]
     private ?string $email = null;
 
-    // firstname, lastname, date of birth, etc.
-
     #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $firstname = null;
