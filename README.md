@@ -1,31 +1,36 @@
-
 # WR506 - Back - Movies API
 
 This is an Movies API for a university project.
 It was develop with Symfony.
 
-
-
-
 ![Logo](https://cdn.worldvectorlogo.com/logos/symfony.svg)
 
 
-## Deployment
+# **Initial setup**
 
-To run this project : 
-- Run
-
+**Step 0. Composer install**
 ```bash
   composer i
 ```
 
+**Step 1. Run server**
 - Run MAMP
 
-- Copy .env.local for .env
+**Step2. Copy .env**
+- Copy .env for .env.local and fill the DATABASE part
 ```bash
-  cp .env.local .env
+  cp .env .env.local
 ```
 
+**Step 3. Migration execution**
+```bash
+php bin/console doctrine:migrations:migrate
+```
 
-You're ready ! 🎉
+**Step4. Fixtures execution**
+```bash
+php bin/console doctrine:fixtures.load
+```
+
+**That's it! You are ready to work ! 🎉**
 
