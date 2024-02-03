@@ -10,7 +10,7 @@ It was develop with Symfony.
 
 **Step 0. Composer install**
 ```bash
-  composer i
+composer i
 ```
 
 **Step 1. Run server**
@@ -19,7 +19,7 @@ It was develop with Symfony.
 **Step2. Copy .env**
 - Copy .env for .env.local and fill the DATABASE part
 ```bash
-  cp .env .env.local
+cp .env .env.local
 ```
 
 **Step 3. Migration execution**
@@ -29,7 +29,7 @@ php bin/console doctrine:migrations:migrate
 
 **Step4. Fixtures execution**
 ```bash
-php bin/console doctrine:fixtures.load
+php bin/console doctrine:fixtures:load
 ```
 
 **That's it! You are ready to work ! 🎉**
