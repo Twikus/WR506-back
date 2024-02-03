@@ -155,6 +155,7 @@ class Movie
     public function __construct()
     {
         $this->actors = new ArrayCollection();
+        $this->mediaObjects = new ArrayCollection();
     }
 
     public function getId(): ?int

@@ -11,6 +11,7 @@
         "doctrine/doctrine-bundle": "^2.10",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.16",
+        "fakerphp/faker": "^1.23",
         "lexik/jwt-authentication-bundle": "^2.20",
         "nelmio/cors-bundle": "^2.3",
         "phpdocumentor/reflection-docblock": "^5.3",
@@ -44,7 +45,8 @@
         "twig/extra-bundle": "^3.7",
         "twig/intl-extra": "^3.7",
         "twig/twig": "^2.12|^3.0",
-        "vich/uploader-bundle": "^2.3"
+        "vich/uploader-bundle": "^2.3",
+        "xylis/faker-cinema-providers": "^2.0"
     },
     "config": {
         "allow-plugins": {

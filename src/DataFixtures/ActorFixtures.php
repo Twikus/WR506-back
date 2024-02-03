@@ -7,36 +7,34 @@ use App\Entity\Nationality;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Faker\Factory;
+use Xylis\FakerCinema\Provider\Person;
 
 class ActorFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
 
-        // Génere les données pour 10 acteurs avec un firstName et un lastName réaliste
-        // Ajouter les pays
+        $rewards = [
+            'Cesar', "Palme or", 'Oscar'
+        ];
 
-        $firstNames = [
-            'Jean', 'Pierre', 'Paul', 'Jacques', 'Marie', 'Julie', 'Julien', 'Jeanne', 'Pierre', 'Pauline'
-        ];
-        $lastNames = [
-            'Dupont', 'Durand', 'Duchemin', 'Duchesse', 'Duc', 'Ducroc', 'Ducrocq', 'Ducroq', 'Ducroque', 'Ducroquefort'
-        ];
+        $faker = Factory::create('fr_FR');
+        $faker->addProvider(new Person($faker));
 
         $nationalities = $manager->getRepository(Nationality::class)->findAll();
 
-        foreach (range(1, 10) as $i) {
-            $actor = new Actor();
-            $actor->setFirstName($firstNames[rand(0, 9)]);
-            $actor->setLastName($lastNames[rand(0, 9)]);
-            $actor->setFullName($actor->getFirstName() . ' ' . $actor->getLastName());
+        foreach (range(1, 30) as $i) {
+
+            $fullname = $faker->unique()->actor;
             $randomNationality = $nationalities[array_rand($nationalities)];
-            $actor->setNationality($randomNationality);
-            $reward =['Oscar du meilleur acteur', 'Oscar du meilleur acteur dans un second rôle', 'Oscar de la meilleure actrice', 'Oscar de la meilleure actrice dans un second rôle', 'Oscar du meilleur film', 'Oscar du meilleur film d\'animation', 'Oscar du meilleur film documentaire', 'Oscar du meilleur film international', 'Oscar du meilleur scénario original', 'Oscar du meilleur scénario adapté'];
-            $actor->setReward($reward[rand(0, 9)]);
+            $actor = (new Actor())
+            ->setFirstName(substr($fullname, 0, strpos($fullname, ' ')))
+            ->setLastName(substr($fullname, strpos($fullname, ' ') + 1))
+            ->setNationality($randomNationality)
+            ->setReward($rewards[rand(0, 2)]);
             $manager->persist($actor);
             $this->addReference('actor_' . $i, $actor);
-            // "expose" l'objet à l'extérieur de la classe pour les liaisons avec Movie
         }
 
         $manager->flush();
