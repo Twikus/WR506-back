@@ -37,7 +37,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'groups' => ['movie:write'],
     ],
 )]
-#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])]
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'category.id' => 'exact'])]
 #[Vich\Uploadable()]
 class Movie
 {
