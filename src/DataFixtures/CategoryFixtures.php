@@ -12,7 +12,7 @@ class CategoryFixtures extends Fixture
     {
         foreach (range(1, 20) as $i) {
             $category = (new Category())
-                ->setName('Action' . $i);
+                ->setName('Category ' . $i);
             $manager->persist($category);
             $this->addReference('category_' . $i, $category);
         }
