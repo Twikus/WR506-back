@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -24,6 +23,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Unique(message: 'Cet email est déjà utilisé')]
     private ?string $email = null;
 
+    // firstname, lastname, date of birth, etc.
+
+    #[Assert\NotBlank]
+    #[ORM\Column(length: 255)]
+    private ?string $firstname = null;
+
+    #[Assert\NotBlank]
+    #[ORM\Column(length: 255)]
+    private ?string $lastname = null;
+
     #[ORM\Column]
     private array $roles = [];
 
@@ -39,6 +48,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getFirstname(): ?string
+    {
+        return $this->firstname;
+    }
+
+    public function setFirstname(string $firstname): static
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname(string $lastname): static
+    {
+        $this->lastname = $lastname;
+
+        return $this;
     }
 
     public function getEmail(): ?string
