@@ -20,7 +20,7 @@ class UserFixtures extends Fixture
         $user->setEmail('user@gmail.com');
         $user->setFirstname('John');
         $user->setLastname('Doe');
-        $user->setRoles(['ROLE_USER']);
+        $user->setRoles(['ROLE_USER', 'ROLE_ADMIN']);
         $user->setPassword($this->passwordHasherInterface->hashPassword($user, 'test'));
         $manager->persist($user);
 
