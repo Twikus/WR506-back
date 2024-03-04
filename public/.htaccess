@@ -11,8 +11,13 @@ DirectoryIndex index.php
 
 # Disabling MultiViews prevents unwanted negotiation, e.g. "/index" should not resolve
 # to the front controller "/index.php" but be rewritten to "/index.php/index".
-<IfModule mod_negotiation.c>
-    Options -MultiViews
+<IfModule mod_headers.c>
+    SetEnvIf Origin "https://mmi21d08.h205.online" AccessControlAllowOrigin=$0
+    Header set Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
+    Header set Access-Control-Allow-Credentials true
+    Header set Access-Control-Allow-Methods "GET, POST, PATCH, DELETE, OPTIONS"
+    Header set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    Header always set Access-Control-Max-Age "3600"
 </IfModule>
 
 <IfModule mod_rewrite.c>
